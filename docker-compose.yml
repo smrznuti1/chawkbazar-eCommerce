@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mongo:7.0.12
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: jesuis
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: webshop
+    ports:
+      - "27017:27017"
+    volumes:
+      - db-data:/data/db
+    command:
+      - --auth
+
+volumes:
+  db-data:
