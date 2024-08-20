@@ -1,6 +1,9 @@
 services:
   db:
     image: mongo:7.0.12
+    restart: on-failure
+    networks:
+      - webshop
     environment:
       MONGO_INITDB_ROOT_USERNAME: jesuis
       MONGO_INITDB_ROOT_PASSWORD: admin
@@ -8,9 +11,28 @@ services:
     ports:
       - "27017:27017"
     volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - db-data:/data/db
-    command:
-      - --auth
+
+  db-interface:
+    image: mongo-express:1.0.2
+    restart: on-failure
+    networks:
+      - webshop
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://jesuis:admin@db:27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_BASICAUTH: false
+    ports:
+      - "8081:8081"
 
 volumes:
   db-data:
+networks:
+  webshop:
+    driver: bridge
