@@ -9,7 +9,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
       MONGO_INITDB_DATABASE: webshop
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - db-data:/data/db
@@ -29,7 +29,23 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: admin
       ME_CONFIG_BASICAUTH: false
     ports:
-      - "8081:8081"
+      - 8081:8081
+
+  backend:
+    build: ./backend/
+    restart: always
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - 5000:5000
+
+  frontend:
+    build: ./client
+    restart: always
+    ports:
+      - 3000:3000
 
 volumes:
   db-data:
