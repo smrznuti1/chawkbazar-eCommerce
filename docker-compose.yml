@@ -16,7 +16,7 @@ services:
       - --auth
 
   db-interface:
-    image: mongo-express:1.0.2
+    image: docker.io/mongo-express:1.0.2
     restart: on-failure
     networks:
       - webshop
